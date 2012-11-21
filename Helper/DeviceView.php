@@ -21,7 +21,7 @@ class DeviceView
     const VIEW_NOT_MOBILE   = 'not_mobile';
 
     private $request;
-    private $viewType;
+    private $viewType = null;
 
     /**
      * Construct

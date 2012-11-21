@@ -40,14 +40,26 @@ class MobileDetector extends \Mobile_Detect
         $this->accept = $request->headers->has('Accept') ? $request->headers->get('Accept') : null;
 
         // If mobile view 'full' or 'not_mobile' disable initDetect
+//        $this->deviceView = new DeviceView($request);
+//        if (($this->deviceView->isFullView() || $this->deviceView->isNotMobileView()) &&
+//                !$this->deviceView->hasSwitchParam()) {
+//            return;
+//        }
+        
+        //TODO: testare modifica codice!
+        //la logica originale funzionava solo se voglio forzare il FULL da device MOBILE, non vice-versa!
         $this->deviceView = new DeviceView($request);
-        if (($this->deviceView->isFullView() || $this->deviceView->isNotMobileView()) &&
-                !$this->deviceView->hasSwitchParam()) {
-            return;
+        $viewType = $this->deviceView->getViewType();
+        if($viewType != null) {
+          //vuol dire che ho forzato una modalità!
+          if ($viewType == DeviceView::VIEW_MOBILE) { $this->isMobile = TRUE; $this->isTablet = FALSE; }
+          else if ($viewType == DeviceView::VIEW_TABLET) { $this->isMobile = FALSE; $this->isTablet = TRUE; }
+          else if ($viewType == DeviceView::VIEW_FULL) { $this->isMobile = FALSE; $this->isTablet = FALSE; }
         }
-
-        // Init detect devices
-        $this->initDetect();
+        else {
+          // Init detect devices (setta la variabile IsMobile se non già settata)
+          $this->initDetect();          
+        }
     }
 
     /**
